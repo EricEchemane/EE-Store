@@ -18,7 +18,7 @@ export class Seller {
     @Column()
     last_name: string;
 
-    @Column()
+    @Column({ unique: true })
     store_name: string;
 
     @Column()
