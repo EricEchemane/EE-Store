@@ -18,7 +18,7 @@ export class AuthService {
         @InjectRepository(Seller)
         private sellersRepository: Repository<Seller>,
         @InjectRepository(Buyer)
-        private buyersRepository: Repository<Buyer>,
+        // private buyersRepository: Repository<Buyer>,
         private configService: ConfigService,
         private jwt: JwtService,
     ) {}
