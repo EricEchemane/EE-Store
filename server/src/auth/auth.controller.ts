@@ -13,8 +13,8 @@ export class AuthController {
     @Post('seller/signup')
     async signupSeller(@Body() dto: SignUpSellerDto) {
         try {
-            const seller = await this.authService.signupSeller(dto);
-            return seller;
+            const token = await this.authService.signupSeller(dto);
+            return token;
         } catch (error) {
 
             if (error instanceof QueryFailedError
