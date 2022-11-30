@@ -8,6 +8,9 @@ import { Buyer } from '@typeorm/entities/buyer.entity';
 import { Seller } from '@typeorm/entities/seller.entity';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
+import { ForbiddenException } from '@nestjs/common';
+import { AccessToken } from './types/access-token.type';
+import { SigninDto } from './dto/sign-in.dto';
 
 @Injectable()
 export class AuthService {
@@ -20,7 +23,7 @@ export class AuthService {
         private jwt: JwtService,
     ) {}
 
-    async signupSeller(dto: SignUpSellerDto) {
+    async signupSeller(dto: SignUpSellerDto): Promise<AccessToken> {
         const hash = await argon.hash(dto.password);
         const seller = this.sellersRepository.create({
             ...dto,
@@ -32,6 +35,18 @@ export class AuthService {
         const token = await this.getToken(payload);
 
         return { access_token: token };
+    }
+    async signinSeller(dto: SigninDto): Promise<AccessToken> {
+        const seller = await this.sellersRepository.findOneBy({ email: dto.email });
+        if (!seller) throw new ForbiddenException('Invalid credentials');
+
+        const passwordMatches = await argon.verify(seller.hash, dto.password);
+        if (!passwordMatches) throw new ForbiddenException('Invalid credentials');
+
+        const payload = { sub: seller.id, email: seller.email };
+        const access_token = await this.getToken(payload);
+
+        return { access_token };
     }
 
     async getToken(payload: any) {

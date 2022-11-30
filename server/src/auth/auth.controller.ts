@@ -4,6 +4,7 @@ import { ForbiddenException } from '@nestjs/common';
 import { Controller } from '@nestjs/common';
 import { QueryFailedError } from 'typeorm';
 import { AuthService } from './auth.service';
+import { SigninDto } from './dto/sign-in.dto';
 import { SignUpSellerDto } from './dto/sign-up-seller.dto';
 
 @Controller('auth')
@@ -23,5 +24,11 @@ export class AuthController {
             }
             throw error;
         }
+    }
+
+    @Post('seller/signin')
+    async signinSeller(@Body() dto: SigninDto) {
+        const token = await this.authService.signinSeller(dto);
+        return token;
     }
 }
