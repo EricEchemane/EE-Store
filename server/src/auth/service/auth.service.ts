@@ -1,16 +1,17 @@
-import { Buyer, Seller } from './../typeorm/entities';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as argon from 'argon2';
 import { Repository } from 'typeorm';
 
-import { SignUpSellerDto } from './dto/sign-up-seller.dto';
+import { SignUpSellerDto } from '../dto/sign-up-seller.dto';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { ForbiddenException } from '@nestjs/common';
-import { AccessToken } from './types/access-token.type';
-import { SigninDto } from './dto/sign-in.dto';
-import { SignUpBuyerDto } from './dto/sign-up-buyer.dto';
+import { AccessToken } from '../types/access-token.type';
+import { SigninDto } from '../dto/sign-in.dto';
+import { SignUpBuyerDto } from '../dto/sign-up-buyer.dto';
+import { Buyer } from 'src/typeorm/entities/buyer.entity';
+import { Seller } from 'src/typeorm/entities/seller.entity';
 
 @Injectable()
 export class AuthService {
