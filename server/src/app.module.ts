@@ -8,7 +8,9 @@ import typeOrmModuleAsyncOptions from './typeorm/typeorm.config';
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
+    ConfigModule.forRoot({
+      isGlobal: true
+    }),
     TypeOrmModule.forRootAsync(typeOrmModuleAsyncOptions),
     AuthModule
   ],
