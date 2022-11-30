@@ -11,6 +11,7 @@ import { ConfigService } from '@nestjs/config';
 import { ForbiddenException } from '@nestjs/common';
 import { AccessToken } from './types/access-token.type';
 import { SigninDto } from './dto/sign-in.dto';
+import { SignUpBuyerDto } from './dto/sign-up-buyer.dto';
 
 @Injectable()
 export class AuthService {
@@ -18,7 +19,7 @@ export class AuthService {
         @InjectRepository(Seller)
         private sellersRepository: Repository<Seller>,
         @InjectRepository(Buyer)
-        // private buyersRepository: Repository<Buyer>,
+        private buyersRepository: Repository<Buyer>,
         private configService: ConfigService,
         private jwt: JwtService,
     ) {}
@@ -44,6 +45,32 @@ export class AuthService {
         if (!passwordMatches) throw new ForbiddenException('Invalid credentials');
 
         const payload = { sub: seller.id, email: seller.email };
+        const access_token = await this.getToken(payload);
+
+        return { access_token };
+    }
+
+    async signupBuyer(dto: SignUpBuyerDto): Promise<AccessToken> {
+        const hash = await argon.hash(dto.password);
+        const buyer = this.buyersRepository.create({
+            ...dto,
+            hash
+        });
+        await this.buyersRepository.save(buyer);
+
+        const payload = { sub: buyer.id, email: buyer.email };
+        const token = await this.getToken(payload);
+
+        return { access_token: token };
+    }
+    async signinBuyer(dto: SigninDto): Promise<AccessToken> {
+        const buyer = await this.buyersRepository.findOneBy({ email: dto.email });
+        if (!buyer) throw new ForbiddenException('Invalid credentials');
+
+        const passwordMatches = await argon.verify(buyer.hash, dto.password);
+        if (!passwordMatches) throw new ForbiddenException('Invalid credentials');
+
+        const payload = { sub: buyer.id, email: buyer.email };
         const access_token = await this.getToken(payload);
 
         return { access_token };
