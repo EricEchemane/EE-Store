@@ -18,14 +18,6 @@
     "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": true,
     "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "paths": {
-      "@typeorm/*": [
-        "src/typeorm/*"
-      ],
-      "@entities/*": [
-        "src/typeorm/entities/*"
-      ],
-    }
+    "noUnusedParameters": true
   }
 }
