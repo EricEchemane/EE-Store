@@ -35,8 +35,9 @@ export class SellersController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateSellerDto: UpdateSellerDto) {
-    return this.sellersService.update(+id, updateSellerDto);
+  async update(@Param('id') id: string, @Body() updateSellerDto: UpdateSellerDto) {
+    const seller = await this.sellersService.update(id, updateSellerDto);
+    return { seller };
   }
 
   @Delete(':id')

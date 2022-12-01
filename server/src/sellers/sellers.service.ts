@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Product, Seller } from 'src/typeorm/entities';
 import { QueryFailedError, Repository } from 'typeorm';
@@ -41,11 +41,16 @@ export class SellersService {
     }
   }
 
-  update(id: number, updateSellerDto: UpdateSellerDto) {
-    return {
-      message: `This action updates a #${id} seller`,
-      updateSellerDto
-    };
+  async update(id: string, updateSellerDto: UpdateSellerDto) {
+    const seller = await this.sellersRepository.findOneBy({ id });
+    if (!seller) throw new NotFoundException('seller not found');
+
+    const updated = await this.sellersRepository.save({
+      ...seller,
+      ...updateSellerDto
+    });
+
+    return updated;
   }
 
   remove(id: number) {
