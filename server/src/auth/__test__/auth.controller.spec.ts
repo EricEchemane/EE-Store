@@ -7,6 +7,7 @@ import {
   signinMockDto,
   signupBuyerMockDto,
 } from './mock-dtos';
+import { JwtPayload } from '../types';
 
 jest.mock('../auth.service');
 
@@ -79,9 +80,10 @@ describe('AuthController', () => {
 
   describe('auth.service.getToken', () => {
     it('should return a token given a payload', async () => {
-      const payload = {
+      const payload: JwtPayload = {
         sub: '78aysdashd',
-        email: signinMockDto.email
+        email: signinMockDto.email,
+        role: "seller"
       };
       const _access_token = await authService.getToken(payload);
       expect(typeof _access_token).toBe('string');
