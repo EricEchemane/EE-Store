@@ -1,4 +1,4 @@
-import { ClassSerializerInterceptor, Post, UseInterceptors } from '@nestjs/common';
+import { ClassSerializerInterceptor, HttpCode, HttpStatus, Post, UseInterceptors } from '@nestjs/common';
 import { Body } from '@nestjs/common';
 import { ForbiddenException } from '@nestjs/common';
 import { Controller } from '@nestjs/common';
@@ -26,6 +26,7 @@ export class AuthController {
         }
     }
 
+    @HttpCode(HttpStatus.OK)
     @Post('seller/signin')
     async signinSeller(@Body() dto: SigninDto) {
         const token = await this.authService.signinSeller(dto);
@@ -47,6 +48,7 @@ export class AuthController {
         }
     }
 
+    @HttpCode(HttpStatus.OK)
     @Post('buyer/signin')
     async signinbuyer(@Body() dto: SigninDto) {
         const token = await this.authService.signinBuyer(dto);
