@@ -54,7 +54,20 @@ export class SellersService {
     return updated;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} seller`;
+  async remove(id: string) {
+    try {
+      const seller = await this.sellersRepository.findOneBy({ id });
+      console.log(seller);
+
+      if (!seller) throw new NotFoundException('Seller not found');
+      return this.sellersRepository.remove(seller);
+
+    } catch (error) {
+      if (error instanceof QueryFailedError &&
+        error.message.startsWith('invalid input syntax for type uuid:')) {
+        throw new NotFoundException('Seller not found');
+      }
+      throw error;
+    }
   }
 }

@@ -23,16 +23,16 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     }
 
     async validate({ role, sub }: JwtPayload) {
+        let user: Buyer | Seller | null = null;
         if (role === 'buyer') {
-            const user = await this.buyersRepository.findOneBy({ id: sub });
-            delete (user as any).hash;
-            return user;
+            user = await this.buyersRepository.findOneBy({ id: sub });
         }
-        if (role === 'seller') {
-            const user = await this.sellersRepository.findOneBy({ id: sub });
-            delete (user as any).hash;
-            return user;
+        else if (role === 'seller') {
+            user = await this.sellersRepository.findOneBy({ id: sub });
         }
-        return null;
+        if (!user) return null;
+
+        delete (user as any).hash;
+        return user;
     }
 }
