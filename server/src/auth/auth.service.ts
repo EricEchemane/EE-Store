@@ -3,14 +3,12 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as argon from 'argon2';
 import { Repository } from 'typeorm';
-
 import { SignUpSellerDto } from './dto/sign-up-seller.dto';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { ForbiddenException } from '@nestjs/common';
-import { AccessToken } from './types/access-token.type';
-import { SigninDto } from './dto/sign-in.dto';
-import { SignUpBuyerDto } from './dto/sign-up-buyer.dto';
+import { SigninDto, SignUpBuyerDto } from './dto';
+import { JwtPayload, AccessToken } from './types';
 
 @Injectable()
 export class AuthService {
@@ -31,7 +29,7 @@ export class AuthService {
         });
         await this.sellersRepository.save(seller);
 
-        const payload = { sub: seller.id, email: seller.email };
+        const payload: JwtPayload = { sub: seller.id, email: seller.email, role: "seller" };
         const token = await this.getToken(payload);
 
         return { access_token: token };
@@ -43,7 +41,7 @@ export class AuthService {
         const passwordMatches = await argon.verify(seller.hash, dto.password);
         if (!passwordMatches) throw new ForbiddenException('Invalid credentials');
 
-        const payload = { sub: seller.id, email: seller.email };
+        const payload: JwtPayload = { sub: seller.id, email: seller.email, role: "seller" };
         const access_token = await this.getToken(payload);
 
         return { access_token };
@@ -57,7 +55,7 @@ export class AuthService {
         });
         await this.buyersRepository.save(buyer);
 
-        const payload = { sub: buyer.id, email: buyer.email };
+        const payload: JwtPayload = { sub: buyer.id, email: buyer.email, role: "buyer" };
         const token = await this.getToken(payload);
 
         return { access_token: token };
@@ -69,13 +67,13 @@ export class AuthService {
         const passwordMatches = await argon.verify(buyer.hash, dto.password);
         if (!passwordMatches) throw new ForbiddenException('Invalid credentials');
 
-        const payload = { sub: buyer.id, email: buyer.email };
+        const payload: JwtPayload = { sub: buyer.id, email: buyer.email, role: "buyer" };
         const access_token = await this.getToken(payload);
 
         return { access_token };
     }
 
-    async getToken(payload: any) {
+    async getToken(payload: JwtPayload) {
         const token = await this.jwt.signAsync(payload, {
             secret: this.configService.get("JWT_SECRET"),
             expiresIn: '15m'
