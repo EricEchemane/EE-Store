@@ -1,23 +1,17 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Product } from 'src/typeorm/entities';
-import { Repository } from 'typeorm';
-import { CreateSellerDto, UpdateSellerDto } from './dto';
+import { Product, Seller } from 'src/typeorm/entities';
+import { QueryFailedError, Repository } from 'typeorm';
+import { UpdateSellerDto } from './dto';
 
 @Injectable()
 export class SellersService {
   constructor(
-    // @InjectRepository(Seller)
-    // private sellersRepository: Repository<Seller>,
+    @InjectRepository(Seller)
+    private sellersRepository: Repository<Seller>,
     @InjectRepository(Product)
     private productsRepository: Repository<Product>,
   ) {}
-  create(createSellerDto: CreateSellerDto) {
-    return {
-      message: 'This action adds a new seller',
-      createSellerDto
-    };
-  }
 
   async getProducts(sellerId: string) {
     const products = await this.productsRepository.find({
@@ -26,14 +20,25 @@ export class SellersService {
     return products;
   }
 
-  findAll() {
-    return {
-      message: `This action returns all sellers`
-    };
+  async findAll() {
+    const sellers = await this.sellersRepository.find();
+    return sellers;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} seller`;
+  async findOne(id: string) {
+    try {
+      const seller = await this.sellersRepository.findOneBy({ id });
+      if (!seller) return null;
+
+      delete (seller as any).hash;
+      return seller;
+    } catch (error) {
+      if (error instanceof QueryFailedError &&
+        error.message.startsWith('invalid input syntax for type uuid:')) {
+        return null;
+      }
+      throw error;
+    }
   }
 
   update(id: number, updateSellerDto: UpdateSellerDto) {
