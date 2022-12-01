@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToOne, JoinColumn } from "typeorm";
 import { ProductPhoto } from "./misc/product-photo.entity";
 import { ProductVariant } from "./misc/product-variant.entity";
 import { Seller } from "./seller.entity";
@@ -26,7 +26,8 @@ export class Product {
     @OneToMany(() => ProductPhoto, (productPhoto) => productPhoto.product)
     photos: ProductPhoto[];
 
-    @OneToMany(() => Seller, seller => seller.products)
+    @ManyToOne(() => Seller, seller => seller.products)
+    @JoinColumn()
     seller: Seller;
 
     @OneToMany(() => ProductVariant, (variant) => variant.product)
