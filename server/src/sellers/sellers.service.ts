@@ -50,6 +50,7 @@ export class SellersService {
       ...updateSellerDto
     });
 
+    delete (updated as any).hash;
     return updated;
   }
 
