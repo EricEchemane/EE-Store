@@ -32,7 +32,6 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         }
         if (!user) return null;
 
-        delete (user as any).hash;
         return user;
     }
 }

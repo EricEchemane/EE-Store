@@ -1,4 +1,4 @@
-import { Post } from '@nestjs/common';
+import { ClassSerializerInterceptor, Post, UseInterceptors } from '@nestjs/common';
 import { Body } from '@nestjs/common';
 import { ForbiddenException } from '@nestjs/common';
 import { Controller } from '@nestjs/common';
@@ -6,6 +6,7 @@ import { QueryFailedError } from 'typeorm';
 import { AuthService } from './auth.service';
 import { SigninDto, SignUpBuyerDto, SignUpSellerDto } from './dto';
 
+@UseInterceptors(ClassSerializerInterceptor)
 @Controller('auth')
 export class AuthController {
     constructor(private authService: AuthService) {}

@@ -30,7 +30,6 @@ export class SellersService {
       const seller = await this.sellersRepository.findOneBy({ id });
       if (!seller) return null;
 
-      delete (seller as any).hash;
       return seller;
     } catch (error) {
       if (error instanceof QueryFailedError &&
@@ -50,7 +49,6 @@ export class SellersService {
       ...updateSellerDto
     });
 
-    delete (updated as any).hash;
     return updated;
   }
 

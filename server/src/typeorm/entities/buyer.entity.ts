@@ -1,3 +1,4 @@
+import { Exclude } from "class-transformer";
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Order } from "./order.entity";
 
@@ -10,6 +11,7 @@ export class Buyer {
     email: string;
 
     @Column()
+    @Exclude()
     hash: string;
 
     @Column()

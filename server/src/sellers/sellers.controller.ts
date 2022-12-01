@@ -1,10 +1,11 @@
-import { Controller, Get, Body, Patch, Param, Delete, UseGuards, NotFoundException } from '@nestjs/common';
+import { Controller, Get, Body, Patch, Param, Delete, UseGuards, NotFoundException, ClassSerializerInterceptor, UseInterceptors } from '@nestjs/common';
 import { SellersService } from './sellers.service';
 import { UpdateSellerDto } from './dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { GetUser } from 'src/auth/decorators';
 import { Seller } from 'src/typeorm/entities';
 
+@UseInterceptors(ClassSerializerInterceptor)
 @UseGuards(JwtAuthGuard)
 @Controller('sellers')
 export class SellersController {
