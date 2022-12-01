@@ -4,9 +4,7 @@ import { ForbiddenException } from '@nestjs/common';
 import { Controller } from '@nestjs/common';
 import { QueryFailedError } from 'typeorm';
 import { AuthService } from './auth.service';
-import { SigninDto } from './dto/sign-in.dto';
-import { SignUpBuyerDto } from './dto/sign-up-buyer.dto';
-import { SignUpSellerDto } from './dto/sign-up-seller.dto';
+import { SigninDto, SignUpBuyerDto, SignUpSellerDto } from './dto';
 
 @Controller('auth')
 export class AuthController {
