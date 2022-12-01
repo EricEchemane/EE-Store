@@ -2,6 +2,8 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@n
 import { SellersService } from './sellers.service';
 import { CreateSellerDto, UpdateSellerDto } from './dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { GetUser } from 'src/auth/decorators';
+import { Seller } from 'src/typeorm/entities';
 
 @UseGuards(JwtAuthGuard)
 @Controller('sellers')
@@ -11,6 +13,17 @@ export class SellersController {
   @Post()
   create(@Body() createSellerDto: CreateSellerDto) {
     return this.sellersService.create(createSellerDto);
+  }
+
+  @Get('me')
+  me(@GetUser() user: Seller) {
+    return user;
+  }
+
+  @Get('me/products')
+  async getProducts(@GetUser() seller: Seller) {
+    const products = await this.sellersService.getProducts(seller.id);
+    return { products, count: products.length };
   }
 
   @Get()
